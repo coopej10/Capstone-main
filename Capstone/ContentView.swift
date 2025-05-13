@@ -41,8 +41,8 @@ struct ContentView: View {
                 showNewHabit = false
             }
         }
-                
-               
+        
+        
         NavigationStack {
             VStack {
                 ZStack {
@@ -66,11 +66,13 @@ struct ContentView: View {
                         HStack {
                             Text(habit.habit)
                             Spacer()
-                            if habit.isCompleted {
-                                Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
-                            } else {
-                                Image(systemName: "circle").foregroundColor(.gray)
-                            }
+                            Button {
+                                toggleCompletion(for: habit)
+                                                          } label: {
+                                                              Image(systemName: habit.isCompleted ? "checkmark.circle.fill" : "circle")
+                                                                  .foregroundColor(habit.isCompleted ? .green : .gray)
+                                                          }
+                            .buttonStyle(.plain)
                         }
                     }
                     .onDelete(perform: deleteHabit)
@@ -79,18 +81,23 @@ struct ContentView: View {
                 NavigationLink(destination: HabitList()) {
                     Text("View All Habits")
                 }
-
+                
             }
         }
-            .padding()
-        }
+        .padding()
+    }
     func deleteHabit(at offsets: IndexSet) {
         for offset in offsets {
             let habit = habits[offset]
             modelContext.delete(habit)
-            }
         }
     }
+    
+    func toggleCompletion (for habit: HabitItem) {
+        habit.isCompleted.toggle()
+        try? modelContext.save()
+    }
+}
     #Preview {
             ContentView()
     }

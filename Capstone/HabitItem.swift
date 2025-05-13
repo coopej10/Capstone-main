@@ -1,5 +1,7 @@
 //
 //  HabitItem.swift
+//
+//  HabitItem.swift
 //  Capstone
 //
 //  Created by Jessica Cooper on 5/11/25.
@@ -22,4 +24,3 @@ class HabitItem: Identifiable {
     }
     
 }
-
