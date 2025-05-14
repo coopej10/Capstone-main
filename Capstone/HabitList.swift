@@ -9,10 +9,37 @@ import SwiftUI
 import SwiftData
 
 struct HabitList: View {
+    @State private var showNewHabit = false
     @Query var habits: [HabitItem]
     @Environment(\.modelContext) var modelContext
     
     var body: some View {
+        VStack{
+            HStack {
+                Text("Add a habit:")
+                    .font(.system(size: 20))
+                    .fontWeight(.black)
+                Spacer()
+                Button {
+                    withAnimation {
+                        showNewHabit = true
+                    }
+                } label: {
+                    Text("+")
+                        .font(.title)
+                        .fontWeight(.bold)
+                }
+            }
+            .padding(.horizontal)
+                
+                if showNewHabit {
+                    NewHabitView { habitName, endDate, repeatsForever in
+                        print("Habit: \(habitName), End: \(String(describing: endDate)), Repeat: \(repeatsForever)")
+                        showNewHabit = false
+                    }
+                }
+            }
+        
         ZStack {
             Color(red: 255/255, green: 179/255, blue: 186/255)
             
@@ -37,29 +64,32 @@ struct HabitList: View {
         .frame(width: 350, height: 75)
         .cornerRadius(15)
         
-        ZStack{
+        VStack{
             if habits.isEmpty {
                 ZStack {
                     Color(red: 255/255, green: 255/255, blue: 186/255)
-                    
-                    Text("No habits yet! Add some to start tracking.")
-                        .font(.headline)
-                        .fontWeight(.medium)
+                    VStack{
+                        Text("No habits yet! Let's start tracking.")
+                            .font(.headline)
+                            .fontWeight(.medium)
+                    }
                 }
                 .frame(maxWidth: .infinity)
                 .cornerRadius(15)
-                
-            } else {
+            }
+        
+            else {
                 List {
                     ForEach (habits) { habit in
                         Text(habit.habit)}
                     .onDelete(perform: deleteHabit)
                 }
-            .listStyle(.plain)
+                .listStyle(.plain)
+                }
             }
-        }
     .padding()
     Spacer()
+        
     }
     
     func deleteHabit(at offsets: IndexSet) {

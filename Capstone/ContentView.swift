@@ -94,7 +94,7 @@ struct ContentView: View {
                         
                     NavigationLink(destination: HabitList()) {
                         VStack {
-                            Text("View All Habits")
+                            Text("Manage Habits")
                                 .multilineTextAlignment(.center)
                             Image("logo")
                                 .resizable()
