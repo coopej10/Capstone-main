@@ -13,12 +13,31 @@ struct HabitList: View {
     @Environment(\.modelContext) var modelContext
     
     var body: some View {
-        VStack {
-            Text("Current Habits:")
+        ZStack {
+            Color(red: 255/255, green: 179/255, blue: 186/255)
+            
+            Text("Current Habits")
                 .font(.title)
                 .fontWeight(.medium)
+                .foregroundColor(Color.white)
                 .padding()
+        }
+        .frame(width: 250, height: 100)
+        .cornerRadius(20)
+        .padding()
+        
+        ZStack {
+            Color(red: 186/255, green: 225/255, blue: 255/255)
             
+            Text("Your future is built daily")
+                .font(.title3)
+                .fontWeight(.semibold)
+                .foregroundColor(Color.black)
+        }
+        .frame(width: 350, height: 75)
+        .cornerRadius(15)
+        
+        VStack{
             List {
                 ForEach (habits) { habit in
                     Text(habit.habit)}

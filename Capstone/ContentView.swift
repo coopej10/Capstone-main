@@ -18,74 +18,97 @@ struct ContentView: View {
     @State private var selectedDate = Date()
     
     var body: some View {
-        
-        HStack {
-            Text("Add a habit")
-                .font(.system(size: 20))
-                .fontWeight(.black)
-            
-            Button {
-                showNewHabit = true
-            } label: {
-                Text("+")
-                    .font(.title)
-                    .fontWeight(.bold)
-            }
-            Spacer()
-        }
-        .padding()
-        
-        if showNewHabit {
-            NewHabitView { habitName, endDate, repeatsForever in
-                print("Habit: \(habitName), End: \(String(describing: endDate)), Repeat: \(repeatsForever)")
-                showNewHabit = false
-            }
-        }
-        
-        
         NavigationStack {
-            VStack {
-                ZStack {
-                    Color(.systemPink)
+            VStack(spacing: 16) {
+                // Header
+                HStack {
+                    Text("Add a habit")
+                        .font(.system(size: 20))
+                        .fontWeight(.black)
                     
-                    Text("Every day counts! Track your habits.")
-                        .font(.title)
-                        .fontWeight(.medium)
-                        .foregroundColor(Color.white)
-                        .multilineTextAlignment(.center)
+                    Spacer()
+                    
+                    Button {
+                        showNewHabit = true
+                    } label: {
+                        Text("+")
+                            .font(.title)
+                            .fontWeight(.bold)
+                    }
                 }
-                .frame(width: 250, height: 100)
-                .cornerRadius(20)
+                .padding(.horizontal)
                 
-                DatePicker("Select Date", selection: $selectedDate, displayedComponents: .date)
-                    .datePickerStyle(.graphical)
-                    .padding()
-                
-                List {
-                    ForEach(habits.filter { Calendar.current.isDate($0.date, inSameDayAs: selectedDate) }) { habit in
+        // Show New Habit View
+                if showNewHabit {
+                    NewHabitView { habitName, endDate, repeatsForever in
+                        print("Habit: \(habitName), End: \(String(describing: endDate)), Repeat: \(repeatsForever)")
+                        showNewHabit = false
+                    }
+                    .padding(.horizontal)
+                }
+        
+    // Scrollable content
+        ScrollView(.vertical, showsIndicators: true) {
+            VStack{
+                        
+            ZStack {
+                Color(red: 255/255, green: 179/255, blue: 186/255)
+                            
+                Text("A better you, on repeat.")
+                    .font(.title)
+                    .fontWeight(.medium)
+                    .foregroundColor(.white)
+                    .multilineTextAlignment(.center)
+                        }
+                    .frame(width: 250, height: 100)
+                    .cornerRadius(20)
+                    .padding(.horizontal)
+                    .shadow(radius: 6)
+                        
+                    DatePicker("Select Date", selection: $selectedDate, displayedComponents: .date)
+                            .datePickerStyle(.graphical)
+                            .padding(.horizontal)
+                        
+                    LazyVStack {
+                        ForEach(habits.filter { Calendar.current.isDate($0.date, inSameDayAs: selectedDate) }) { habit in
                         HStack {
                             Text(habit.habit)
                             Spacer()
                             Button {
                                 toggleCompletion(for: habit)
-                                                          } label: {
-                                                              Image(systemName: habit.isCompleted ? "checkmark.circle.fill" : "circle")
-                                                                  .foregroundColor(habit.isCompleted ? .green : .gray)
-                                                          }
-                            .buttonStyle(.plain)
+                            } label: {
+                                Image(systemName: habit.isCompleted ? "checkmark.circle.fill" : "circle")
+                                    .foregroundColor(habit.isCompleted ? .green : .gray)
+                                    }
+                                .buttonStyle(.plain)
+                                }
+                                .padding()
+                                .background(Color.gray.opacity(0.1))
+                                .cornerRadius(10)
+                            }
+                            .onDelete(perform: deleteHabit)
                         }
+                        .padding(.horizontal)
+                        
+                    NavigationLink(destination: HabitList()) {
+                        VStack {
+                            Text("View All Habits")
+                                .multilineTextAlignment(.center)
+                            Image("logo")
+                                .resizable()
+                                .frame(width: 150, height: 150)
+                            }
+                        }
+                        .padding()
                     }
-                    .onDelete(perform: deleteHabit)
                 }
-                
-                NavigationLink(destination: HabitList()) {
-                    Text("View All Habits")
-                }
-                
             }
+            .padding()
         }
-        .padding()
     }
+
+    // Functions
+
     func deleteHabit(at offsets: IndexSet) {
         for offset in offsets {
             let habit = habits[offset]
@@ -93,11 +116,12 @@ struct ContentView: View {
         }
     }
     
-    func toggleCompletion (for habit: HabitItem) {
+    func toggleCompletion(for habit: HabitItem) {
         habit.isCompleted.toggle()
         try? modelContext.save()
     }
 }
-    #Preview {
-            ContentView()
-    }
+
+#Preview {
+    ContentView()
+}
