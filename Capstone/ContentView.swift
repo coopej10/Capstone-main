@@ -29,7 +29,9 @@ struct ContentView: View {
                     Spacer()
                     
                     Button {
-                        showNewHabit = true
+                        withAnimation {
+                            showNewHabit = true
+                        }
                     } label: {
                         Text("+")
                             .font(.title)
@@ -63,7 +65,7 @@ struct ContentView: View {
                     .frame(width: 250, height: 100)
                     .cornerRadius(20)
                     .padding(.horizontal)
-                    .shadow(radius: 6)
+                    .shadow(radius: 3)
                         
                     DatePicker("Select Date", selection: $selectedDate, displayedComponents: .date)
                             .datePickerStyle(.graphical)

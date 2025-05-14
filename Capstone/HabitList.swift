@@ -37,13 +37,29 @@ struct HabitList: View {
         .frame(width: 350, height: 75)
         .cornerRadius(15)
         
-        VStack{
-            List {
-                ForEach (habits) { habit in
-                    Text(habit.habit)}
-                .onDelete(perform: deleteHabit)
+        ZStack{
+            if habits.isEmpty {
+                ZStack {
+                    Color(red: 255/255, green: 255/255, blue: 186/255)
+                    
+                    Text("No habits yet! Add some to start tracking.")
+                        .font(.headline)
+                        .fontWeight(.medium)
+                }
+                .frame(maxWidth: .infinity)
+                .cornerRadius(15)
+                
+            } else {
+                List {
+                    ForEach (habits) { habit in
+                        Text(habit.habit)}
+                    .onDelete(perform: deleteHabit)
+                }
+            .listStyle(.plain)
             }
         }
+    .padding()
+    Spacer()
     }
     
     func deleteHabit(at offsets: IndexSet) {
